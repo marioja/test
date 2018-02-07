@@ -1,0 +1,7 @@
+<book>
+	<title>My Life</title>
+	<author>J. Smith<carrot>good</carrot></author>
+	<!-- <carrot>bad</carrot> -->
+	<publisher>ACME Publishing</publisher>
+	...
+</book>
