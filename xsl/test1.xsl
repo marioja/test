@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<stylesheet version="1.0" xmlns="http://www.w3.org/1999/XSL/Transform">
+<stylesheet version="2.0" xmlns="http://www.w3.org/1999/XSL/Transform">
 	<output method="xml" indent="yes" />
 	<param name="pname" />
 	<param name="pvers" />
@@ -8,7 +8,8 @@
 			<apply-templates select="@* | node()" />
 		</copy>
 	</template>
-	<template match="book[@id=$pname]">
+	<!-- <template match="book[@id=$pname]"> -->
+	<template match="id($pname)">
 		<copy>
 			<apply-templates select="@* | node() " />
 		</copy>
