@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="xmlBookmarksBuilder"
+         name="XML Bookmarks Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="net.mfjassociates.ui.markers.builder.XMLBookmarksBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="xmlBookmarksNature"
+         name="XML Bookmarks Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="net.mfjassociates.ui.markers.builder.XMLBookmarksNature">
+         </run>
+      </runtime>
+      <builder
+            id="net.mfjassociates.ui.markers.xmlBookmarksBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="XML Bookmarks Project Nature commands"
+            id="net.mfjassociates.ui.markers.xmlBookmarksNature.category">
+      </category>
+      <command
+            name="Add/RemoveXML Bookmarks Project Nature"
+            defaultHandler="net.mfjassociates.ui.markers.builder.AddRemoveXMLBookmarksNatureHandler"
+            categoryId="net.mfjassociates.ui.markers.xmlBookmarksNature.category"
+            id="net.mfjassociates.ui.markers.addRemoveXMLBookmarksNature">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="net.mfjassociates.ui.markers.addRemoveXMLBookmarksNature"
+               label="Disable Sample builder"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IProject">
+                        <test
+                              value="net.mfjassociates.ui.markers.xmlBookmarksNature"
+                              property="org.eclipse.core.resources.projectNature">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="net.mfjassociates.ui.markers.addRemoveXMLBookmarksNature"
+               label="Enable Sample builder"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <adapt
+                           type="org.eclipse.core.resources.IProject">
+                        <not>
+                           <test
+                                 value="net.mfjassociates.ui.markers.xmlBookmarksNature"
+                                 property="org.eclipse.core.resources.projectNature">
+                           </test>
+                        </not>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         id="xmlProblem"
+         name="XML Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+
+</plugin>
