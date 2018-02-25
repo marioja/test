@@ -120,7 +120,7 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 	}
 
 	void checkXML(IResource resource) {
-		if (resource instanceof IFile && resource.getName().endsWith(".zzxml")) {
+		if (resource instanceof IFile && resource.getName().endsWith(".xml")) {
 			IFile file = (IFile) resource;
 			deleteMarkers(file);
 			XMLErrorHandler reporter = new XMLErrorHandler(file);
