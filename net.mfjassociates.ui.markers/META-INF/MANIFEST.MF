@@ -1,15 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Markers
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: net.mfjassociates.ui.markers;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: MFJ Associates
+Bundle-Vendor: %Bundle-Vendor
 Bundle-Localization: plugin
 Require-Bundle: javax.inject,
  org.eclipse.osgi,
  org.eclipse.jface,
  org.eclipse.e4.ui.services,
  org.eclipse.e4.core.di.annotations,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.core.runtime;bundle-version="3.13.0",
+ org.eclipse.core.resources;bundle-version="3.12.0",
+ org.eclipse.jdt.core;bundle-version="3.13.100",
+ org.eclipse.ui.ide;bundle-version="3.13.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.annotation;version="1.2.0"
