@@ -22,7 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 
-	class SampleDeltaVisitor implements IResourceDeltaVisitor {
+	class XMLBookmarksDeltaVisitor implements IResourceDeltaVisitor {
 		@Override
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			IResource resource = delta.getResource();
@@ -44,7 +44,7 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	class SampleResourceVisitor implements IResourceVisitor {
+	class XMLBookmarksResourceVisitor implements IResourceVisitor {
 		public boolean visit(IResource resource) {
 			checkXML(resource);
 			//return true to continue visiting children.
@@ -120,7 +120,7 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 	}
 
 	void checkXML(IResource resource) {
-		if (resource instanceof IFile && resource.getName().endsWith(".xml")) {
+		if (resource instanceof IFile && resource.getName().endsWith(".zzxml")) {
 			IFile file = (IFile) resource;
 			deleteMarkers(file);
 			XMLErrorHandler reporter = new XMLErrorHandler(file);
@@ -141,7 +141,7 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor monitor)
 			throws CoreException {
 		try {
-			getProject().accept(new SampleResourceVisitor());
+			getProject().accept(new XMLBookmarksResourceVisitor());
 		} catch (CoreException e) {
 		}
 	}
@@ -157,6 +157,6 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
 		// the visitor does the work.
-		delta.accept(new SampleDeltaVisitor());
+		delta.accept(new XMLBookmarksDeltaVisitor());
 	}
 }

@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Markers
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: net.mfjassociates.ui.markers;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: net.mfjassociates.ui.markers.Activator
-Bundle-Vendor: MFJ Associates
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui,
   org.eclipse.core.runtime,
   org.eclipse.core.resources

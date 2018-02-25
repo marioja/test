@@ -4,7 +4,7 @@
 
    <extension
          id="xmlBookmarksBuilder"
-         name="XML Bookmarks Project Builder"
+         name="%extension.builder.name"
          point="org.eclipse.core.resources.builders">
       <builder
             hasNature="true">
@@ -15,7 +15,7 @@
    </extension>
    <extension
          id="xmlBookmarksNature"
-         name="XML Bookmarks Project Nature"
+         name="%extension.nature.name"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
@@ -29,11 +29,11 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            name="XML Bookmarks Project Nature commands"
+            name="%category.name"
             id="net.mfjassociates.ui.markers.xmlBookmarksNature.category">
       </category>
       <command
-            name="Add/RemoveXML Bookmarks Project Nature"
+            name="%command.name"
             defaultHandler="net.mfjassociates.ui.markers.builder.AddRemoveXMLBookmarksNatureHandler"
             categoryId="net.mfjassociates.ui.markers.xmlBookmarksNature.category"
             id="net.mfjassociates.ui.markers.addRemoveXMLBookmarksNature">
@@ -45,7 +45,7 @@
             locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command
                commandId="net.mfjassociates.ui.markers.addRemoveXMLBookmarksNature"
-               label="Disable Sample builder"
+               label="%command.disable.label"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -68,7 +68,7 @@
          </command>
          <command
                commandId="net.mfjassociates.ui.markers.addRemoveXMLBookmarksNature"
-               label="Enable Sample builder"
+               label="%command.enable.label"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -95,7 +95,7 @@
    </extension>
    <extension
          id="xmlProblem"
-         name="XML Problem"
+         name="%extension.name.1"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
