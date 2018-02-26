@@ -104,5 +104,20 @@
             value="true">
       </persistent>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.wst.xml.ui.preferences.xml.xml"
+            class="net.mfjassociates.ui.markers.preferences.XMLBookmarksPreferencePage"
+            id="net.mfjassociates.ui.markers.preferences.XMLBookmarksPreferencePage"
+            name="XML Bookmarks Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="net.mfjassociates.ui.markers.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
