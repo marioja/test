@@ -1,1 +1,2 @@
-# test
+# utils
+Repository of several utilities
