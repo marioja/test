@@ -152,12 +152,11 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 	void checkXML(IResource resource) {
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
-			boolean createBookmarksFile=Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.P_CREATE_BOOKMARKS_FILE);
 			if (file.getName().endsWith(XML_FILE_TYPE) && !file.getName().endsWith(BOOKMAKRS_XML_FILE_TYPE)) {
 				IFile bookmarksfile=bookmarksFile(file);
 				long xmltime=file.getLocalTimeStamp();
 				long bookmarkstime=bookmarksfile.getLocalTimeStamp();
-				if ((xmltime>bookmarkstime || bookmarksfile.getModificationStamp()==IResource.NULL_STAMP) && createBookmarksFile) { // xml file was changed, rewrite the bookmarks
+				if (xmltime>bookmarkstime || bookmarksfile.getModificationStamp()==IResource.NULL_STAMP) { // xml file was changed, rewrite the bookmarks
 					System.out.println("XML file updated, rewriting bookmarks file");
 					exportMarkers(file, bookmarksfile, xmltime-1);
 				}
@@ -293,8 +292,11 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 			bookmarksfileps.println("</markers>");
 			bookmarksfileps.close();
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			boolean createBookmarksFile=Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.P_CREATE_BOOKMARKS_FILE);
 			if (bookmarksfile.exists()) bookmarksfile.setContents(bais, true, false, null);
-			else bookmarksfile.create(bais, true, null);
+			else {
+				if (createBookmarksFile) bookmarksfile.create(bais, true, null);
+			}
 		} catch (CoreException e) {
 			// ignore
 		} finally {
