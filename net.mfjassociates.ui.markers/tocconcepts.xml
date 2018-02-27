@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Concepts" link_to="toc.xml#concepts"> 
+	<topic label="How bookmarks are created"  href="html/concepts/howcreated.html"> 
+		<topic label="XML Bookmarks preferences" href="html/concepts/prefs.html" /> 
+	</topic>
+	<topic href="html/concepts/enabling.html" label="Enabling the XML Bookmarks plugin">
+		<topic label="Sub Topic 2" href="html/concepts/subtopic2.html" /> 
+	</topic> 
+</toc>

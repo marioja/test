@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>How bookmarks are created</title>
+</head>
+
+<body>
+<h1>Using the add bookmarks editor ruler command</h1>
+You can create bookmarks in an XML file by using the standard Eclipse add bookmarks (right mouse
+click on the left margin in the XML editor).  When you save the XML file this will define also create the ancillary
+bookmarks XML file if you have set the create bookmarks file preference. 
+<h1>Creating the bookmarks ancillary file with bookmarks information</h1>
+You can create in an XML editor or using an external program an ancillary XML file that looks like this:
+<pre>
+&lt;markers>
+  &lt;marker>
+  	&lt;lineno>2&lt;/lineno>
+  	&lt;message>important&lt;/message>
+  &lt;/marker>
+  &lt;marker>
+  	&lt;lineno>12&lt;/lineno>
+  	&lt;message>less important&lt;/message>
+  &lt;/marker>
+  &lt;marker>
+  	&lt;lineno>43&lt;/lineno>
+  	&lt;message>minor important&lt;/message>
+  &lt;/marker>
+&lt;/markers>
+</pre>
+This will create 3 bookmarks with the given text in the message element on the line number specified by the lineno element.
+If you want these bookmarks to be created on file purchase-orders.xml make sure you save the ancillary
+file as purchase-orders.bookmarks.xml.  You can look at the bookmarks using the Eclipse standard Bookmarks view. 
+</body>
+</html>
