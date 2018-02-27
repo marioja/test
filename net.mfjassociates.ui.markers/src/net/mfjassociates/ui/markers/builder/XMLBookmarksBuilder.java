@@ -34,6 +34,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import net.mfjassociates.ui.markers.Activator;
+import net.mfjassociates.ui.markers.preferences.PreferenceConstants;
+
 public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 
 	class XMLBookmarksDeltaVisitor implements IResourceDeltaVisitor {
@@ -149,11 +152,12 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 	void checkXML(IResource resource) {
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
+			boolean createBookmarksFile=Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.P_CREATE_BOOKMARKS_FILE);
 			if (file.getName().endsWith(XML_FILE_TYPE) && !file.getName().endsWith(BOOKMAKRS_XML_FILE_TYPE)) {
 				IFile bookmarksfile=bookmarksFile(file);
 				long xmltime=file.getLocalTimeStamp();
 				long bookmarkstime=bookmarksfile.getLocalTimeStamp();
-				if (xmltime>bookmarkstime || bookmarksfile.getModificationStamp()==IResource.NULL_STAMP) { // xml file was changed, rewrite the bookmarks
+				if ((xmltime>bookmarkstime || bookmarksfile.getModificationStamp()==IResource.NULL_STAMP) && createBookmarksFile) { // xml file was changed, rewrite the bookmarks
 					System.out.println("XML file updated, rewriting bookmarks file");
 					exportMarkers(file, bookmarksfile, xmltime-1);
 				}

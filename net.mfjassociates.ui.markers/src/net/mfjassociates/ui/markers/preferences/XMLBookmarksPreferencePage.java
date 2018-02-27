@@ -1,8 +1,13 @@
 package net.mfjassociates.ui.markers.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+
 import net.mfjassociates.ui.markers.Activator;
 
 /**
@@ -26,7 +31,7 @@ public class XMLBookmarksPreferencePage
 	public XMLBookmarksPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A demonstration of a preference page implementation");
+		setDescription(XMLBookmarksUIMessage.preference_title);
 	}
 	
 	/**
@@ -36,23 +41,12 @@ public class XMLBookmarksPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH, 
-				"&Directory preference:", getFieldEditorParent()));
 		addField(
 			new BooleanFieldEditor(
-				PreferenceConstants.P_BOOLEAN,
-				"&An example of a boolean preference",
+				PreferenceConstants.P_CREATE_BOOKMARKS_FILE,
+				XMLBookmarksUIMessage.create_bookmarks_file_label,
 				getFieldEditorParent()));
 
-		addField(new RadioGroupFieldEditor(
-				PreferenceConstants.P_CHOICE,
-			"An example of a multiple-choice preference",
-			1,
-			new String[][] { { "&Choice 1", "choice1" }, {
-				"C&hoice 2", "choice2" }
-		}, getFieldEditorParent()));
-		addField(
-			new StringFieldEditor(PreferenceConstants.P_STRING, "A &text preference:", getFieldEditorParent()));
 	}
 
 	/* (non-Javadoc)
