@@ -2,7 +2,7 @@
 <feature
       id="net.mfjassociates.ui.markers.feature"
       label="net.mfjassociates.ui.markers.feature"
-      version="1.0.0.qualifier">
+      version="1.0.1">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -20,7 +20,7 @@
          id="net.mfjassociates.ui.markers"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.0.1"
          unpack="false"/>
 
 </feature>
