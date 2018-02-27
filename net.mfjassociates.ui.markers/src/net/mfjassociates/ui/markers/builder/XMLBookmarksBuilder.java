@@ -2,9 +2,11 @@ package net.mfjassociates.ui.markers.builder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -15,6 +17,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -24,8 +29,13 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -38,6 +48,8 @@ import net.mfjassociates.ui.markers.Activator;
 import net.mfjassociates.ui.markers.preferences.PreferenceConstants;
 
 public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
+	
+	private static final NumberFormat usnf = NumberFormat.getNumberInstance(Locale.US);
 
 	class XMLBookmarksDeltaVisitor implements IResourceDeltaVisitor {
 		@Override
@@ -168,13 +180,12 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 				long bookmarkstime=file.getLocalTimeStamp();
 				if (bookmarkstime>xmltime && !(file.getModificationStamp()==IResource.NULL_STAMP)) { // bookmarks xml file was changed, update bookmarks
 					deleteMarkers(xmlfile, IMarker.BOOKMARK);
-					try {
+					try (Bookmark bookmark=new Bookmark(xmlfile)){
 						Document doc = docBuilder.parse(file.getContents());
 						NodeList markers = doc.getElementsByTagName("marker");
-						Bookmark bookmark=new Bookmark(xmlfile);
 						IntStream.range(0, markers.getLength()).mapToObj(markers::item).map(bookmark::createMarker).count();
 						
-					} catch (SAXException | IOException | CoreException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					System.out.println("Bookmarks file updated, updating bookmarks");
@@ -192,10 +203,17 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 			}
 		}*/
 	}
-	class Bookmark {
+	class Bookmark implements AutoCloseable{
 		private IFile file;
-		public Bookmark(IFile aFile) {
+		private IPath path;
+		private IDocument document;
+		private ITextFileBufferManager tfbm;
+		public Bookmark(IFile aFile) throws CoreException {
 			this.file = aFile;
+			this.path = this.file.getFullPath();
+			tfbm = FileBuffers.createTextFileBufferManager();
+			tfbm.connect(path, LocationKind.IFILE, null);
+			document = tfbm.getTextFileBuffer(path, LocationKind.IFILE).getDocument();			
 		}
 		private IMarker createMarker(Node node) {
 			IMarker retmarker=null;
@@ -204,6 +222,26 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 				retmarker = marker;
 				NodeList attributes=node.getChildNodes();
 				IntStream.range(0,  attributes.getLength()).mapToObj(attributes::item).forEach(attribute -> fillMarker(marker, attribute));
+				
+				int start = -1;
+				int length = 0;
+				int end = -1;
+				try {
+
+					// marker line numbers are 1-based whereas getLineInformation is 0-based
+					IRegion lineInformation= document.getLineInformation(marker.getAttribute("lineNumber", 0)-1);
+					start= lineInformation.getOffset();
+					length= lineInformation.getLength();
+
+					end= start + length;
+
+
+				} catch (BadLocationException x) {
+				}
+
+				MarkerUtilities.setCharStart(retmarker, start);
+				MarkerUtilities.setCharEnd(retmarker, end);
+				
 			} catch (CoreException e) {
 			}
 			return retmarker;
@@ -214,12 +252,12 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 					Object value=null;
 					String attributeName=attribute.getNodeName();
 					if (!"message".equals(attributeName)) {
-						value=new Integer(attribute.getTextContent());
-					} else {
 						try {
-							value=attribute.getTextContent();
-						} catch (NumberFormatException e) {
+							value=new Integer(usnf.parse(attribute.getTextContent()).intValue());
+						} catch (ParseException e) {
 						}
+					} else {
+						value=attribute.getTextContent();
 					}
 					if (value!=null) marker.setAttribute(attributeName, value);
 				}
@@ -227,8 +265,11 @@ public class XMLBookmarksBuilder extends IncrementalProjectBuilder {
 				e.printStackTrace();
 			}
 		}
+		@Override
+		public void close() throws Exception {
+			if (tfbm!=null) tfbm.disconnect(path, LocationKind.IFILE, null);
+		}
 	}
-
 	private IFile xmlFile(IFile file) {
 		String fn=file.getName();
 		int l=fn.length();

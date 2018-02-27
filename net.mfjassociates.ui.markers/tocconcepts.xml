@@ -6,6 +6,5 @@
 		<topic label="XML Bookmarks preferences" href="html/concepts/prefs.html" /> 
 	</topic>
 	<topic href="html/concepts/enabling.html" label="Enabling the XML Bookmarks plugin">
-		<topic label="Sub Topic 2" href="html/concepts/subtopic2.html" /> 
 	</topic> 
 </toc>
