@@ -132,5 +132,11 @@
             file="tocgettingstarted.xml">
       </toc>
    </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="html/context.xml">
+      </contexts>
+   </extension>
 
 </plugin>

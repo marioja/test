@@ -4,6 +4,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 
 import net.mfjassociates.ui.markers.Activator;
 
@@ -38,11 +39,12 @@ public class XMLBookmarksPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(
-			new BooleanFieldEditor(
+		BooleanFieldEditor bfe = new BooleanFieldEditor(
 				PreferenceConstants.P_CREATE_BOOKMARKS_FILE,
 				XMLBookmarksUIMessage.create_bookmarks_file_label,
-				getFieldEditorParent()));
+				getFieldEditorParent());
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(bfe.getDescriptionControl(getFieldEditorParent()), "Bookmarks_Create");
+		addField(bfe);
 
 	}
 
