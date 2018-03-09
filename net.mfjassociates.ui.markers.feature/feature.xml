@@ -2,7 +2,7 @@
 <feature
       id="net.mfjassociates.ui.markers.feature"
       label="net.mfjassociates.ui.markers.feature"
-      version="1.0.11">
+      version="1.0.12">
 
    <description>
       This contains the update site for the XML Bookmarks Eclipse plugin

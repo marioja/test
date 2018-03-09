@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contexts>
+   <context id="xml_bookmarks_preference_page_context" title="XML Bookmarks Preferences">
+      <description>On this page you can indicate your preference for the XML Bookmarks Nature settings.</description>
+      <topic href="html/concepts/prefs.html" label="XML Bookmarks Preferences"/>
+   </context>
 </contexts>
