@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="union.xsl" type="text/xsl"?>
+<!DOCTYPE provinces [
+<!ELEMENT provinces (province)+>
+<!ELEMENT province (name, abbreviation)>
+<!ATTLIST province id ID #REQUIRED>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT abbreviation (#PCDATA)>
+]>
+
+<provinces>
+ <province id="AB">
+  <name>Alberta</name>
+  <abbreviation>AB</abbreviation>
+ </province>
+ <province id="BC">
+  <name>British Columbia</name>
+  <abbreviation>BC</abbreviation>
+ </province>
+ <province id="MB">
+  <name>Manitoba</name>
+  <abbreviation>MB</abbreviation>
+ </province>
+ <province id="NB">
+  <name>New Brunswick</name>
+  <abbreviation>NB</abbreviation>
+ </province>
+ <province id="NL">
+  <name>Newfoundland and Labrador</name>
+  <abbreviation>NL</abbreviation>
+ </province>
+ <province id="NT">
+  <name>Northwest Territories</name>
+  <abbreviation>NT</abbreviation>
+ </province>
+ <province id="NS">
+  <name>Nova Scotia</name>
+  <abbreviation>NS</abbreviation>
+ </province>
+ <province id="NU">
+  <name>Nunavut</name>
+  <abbreviation>NU</abbreviation>
+ </province>
+ <province id="ON">
+  <name>Ontario</name>
+  <abbreviation>ON</abbreviation>
+ </province>
+ <province id="PE">
+  <name>Prince Edward Island</name>
+  <abbreviation>PE</abbreviation>
+ </province>
+ <province id="QC">
+  <name>Quebec</name>
+  <abbreviation>QC</abbreviation>
+ </province>
+ <province id="SK">
+  <name>Saskatchewan</name>
+  <abbreviation>SK</abbreviation>
+ </province>
+ <province id="YT">
+  <name>Yukon</name>
+  <abbreviation>YT</abbreviation>
+ </province>
+</provinces>

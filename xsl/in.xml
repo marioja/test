@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<src:view name="books"
+    xmlns="xyz.com/wow"
+    xmlns:src="xyz.com/fun" 
+    xmlns:xsi="w3.org/2001/XMLSchema-instance">
+    <books>
+        <title>Searching for Answers</title>
+    </books>
+    <books>
+        <title>Get Rich Quick</title>   
+    </books>
+    <books>
+        <title>Negotiating with the Grim Reaper</title> 
+    </books>    
+</src:view>
