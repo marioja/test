@@ -131,15 +131,12 @@
       <toc
             file="tocgettingstarted.xml">
       </toc>
-      <toc
-            file="tocreference.xml">
-      </toc>
-      <toc
-            file="tocsamples.xml">
-      </toc>
-      <toc
-            file="toctasks.xml">
-      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="html/context.xml">
+      </contexts>
    </extension>
 
 </plugin>

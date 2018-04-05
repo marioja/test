@@ -2,8 +2,10 @@ package net.mfjassociates.ui.markers.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 
 import net.mfjassociates.ui.markers.Activator;
 
@@ -24,6 +26,8 @@ import net.mfjassociates.ui.markers.Activator;
 public class XMLBookmarksPreferencePage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
+	
+	private static final String XML_BOOKMARKS_PREFERENCE_PAGE_CONTEXT = Activator.PLUGIN_ID+"."+"xml_bookmarks_preference_page_context";
 
 	public XMLBookmarksPreferencePage() {
 		super(GRID);
@@ -38,12 +42,20 @@ public class XMLBookmarksPreferencePage
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(
-			new BooleanFieldEditor(
+		BooleanFieldEditor bfe = new BooleanFieldEditor(
 				PreferenceConstants.P_CREATE_BOOKMARKS_FILE,
 				XMLBookmarksUIMessage.create_bookmarks_file_label,
-				getFieldEditorParent()));
+				getFieldEditorParent());
+		addField(bfe);
 
+	}
+	
+	
+
+	@Override
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), XML_BOOKMARKS_PREFERENCE_PAGE_CONTEXT);
 	}
 
 	/* (non-Javadoc)
