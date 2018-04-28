@@ -20,17 +20,17 @@ public class FileSystemHandler {
 	 * Display filesystem tree aFile
 	 * @param aFile
 	 */
-	private static void displayMyFile(CummulativeFile aFile) {
+	protected static void displayMyFile(CummulativeFile aFile) {
 		System.out.print(aFile.getFileType()+aFile.getFile().getPath());
 		if (aFile.getFile().isDirectory()) {
 			System.out.println(",l:"+aFile.getLength());
 			aFile.getFiles().stream().forEach(FileSystemHandler::displayMyFile);
 		} else System.out.println();
 	}
-	private static CummulativeFile createDir(String path) throws IOException {
+	public static CummulativeFile createDir(String path) {
 		return createDir(null, Paths.get(path));
 	}
-	private static CummulativeFile createDir(final CummulativeFile parent, Path dir) {
+	public static CummulativeFile createDir(final CummulativeFile parent, Path dir) {
 		final CummulativeFile myDir;
 		CummulativeFile reportDir=null;
 		try {
@@ -43,7 +43,7 @@ public class FileSystemHandler {
 		}
 		return reportDir;
 	}
-	private static void createFile(CummulativeFile parent, Path file) {
+	public static void createFile(CummulativeFile parent, Path file) {
 		CummulativeFile myFile=new CummulativeFile(parent, file);
 //		System.out.println("f:"+file);
 	}
