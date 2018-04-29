@@ -48,6 +48,9 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 			this.parent.files.add(this);
 		}
 	}
+	public static void main(String[] args) {
+		System.out.println(Math.pow(2,20));
+	}
 
 	/**
 	 * This event handler can be used to delete CummulativeFile from this.files when one the treeItem passed as argument's
