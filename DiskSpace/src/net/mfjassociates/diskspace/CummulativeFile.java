@@ -5,10 +5,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
+import javafx.event.EventHandler;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.collections.ListChangeListener;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeItem.TreeModificationEvent;
 
 public class CummulativeFile /*implements ListChangeListener<TreeItem<CummulativeFile>>*/ {
 
@@ -36,11 +38,45 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		this.treeItem=new TreeItem<CummulativeFile>(this);
 		if (this.parent != null) {
 			if (this.theUnderlyingFile.isFile()) {
-				this.parent.addLength(this.theUnderlyingFile.length());
+				long l=this.theUnderlyingFile.length();
+				this.parent.addLength(l);
+				this.length.set(l);
 			}
-			this.parent.getTreeItem().getChildren().add(this.treeItem); // add this treeItem to parent treeItem children
+			Platform.runLater(() -> {
+				this.parent.getTreeItem().getChildren().add(this.treeItem); // add this treeItem to parent treeItem children
+			});
 			this.parent.files.add(this);
 		}
+	}
+
+	/**
+	 * This event handler can be used to delete CummulativeFile from this.files when one the treeItem passed as argument's
+	 * child is deleted
+	 * @param treeItem
+	 */
+	public void addEventHandler(TreeItem<CummulativeFile> treeItem) {
+
+		treeItem.addEventHandler(TreeItem.<CummulativeFile>childrenModificationEvent(), new EventHandler<TreeItem.TreeModificationEvent<CummulativeFile>>() {
+			@Override
+			public void handle(TreeModificationEvent<CummulativeFile> event) {
+				if (event.wasAdded())
+				{
+					for(TreeItem<CummulativeFile> item : event.getAddedChildren())
+					{
+						System.out.println("Node " + item.getValue() + " has been added.");
+					}
+				}
+
+				if (event.wasRemoved())
+				{
+					for(TreeItem<CummulativeFile> item : event.getRemovedChildren())
+					{
+						System.out.println("Node " + item.getValue() + " has been removed.");
+					}
+				}
+
+			}
+		});
 	}
 	
 	public TreeItem<CummulativeFile> getTreeItem() {
@@ -72,7 +108,24 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	}
 
 	public String toString() {
-		return this.theUnderlyingFile.toPath().toString();
+		return this.theUnderlyingFile.toPath().toString()+"("+getHumanLength()+")";
+	}
+	public String getHumanLength() {
+		long l=length.get();
+		if (l<twoExp(10)) { // bytes
+			return l+" bytes";
+		} else if (l<twoExp(20)) { // kilobytes
+			return (long)(((double)l)/twoExp(10))+" Kb";
+		} else if (l<twoExp(30)) { // megabytes
+			return (long)(((double)l)/twoExp(20))+" Mb";			
+		} else if (l<twoExp(40)) { // gigabytes
+			return (long)(((double)l)/twoExp(30))+" Gb";			
+		} else  { // terabytes
+			return (long)(((double)l)/twoExp(40))+" Tb";			
+		}
+	}
+	private long twoExp(int e) {
+		return (long) Math.pow(2, e);
 	}
 
 	public String getFileType() {
@@ -87,7 +140,6 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		if (this.parent != null && this.parent != this)
 			this.parent.addLength(bytes);
 	}
-
 //	@Override
 //	public void onChanged(Change<? extends TreeItem<CummulativeFile>> c) {
 //		while (c.next()) {
