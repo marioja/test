@@ -3,10 +3,6 @@ package net.mfjassociates.diskspace;
 import static net.mfjassociates.diskspace.FileSystemHandler.createDir;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-
-
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -27,18 +23,21 @@ public class DiskSpaceController {
 	}
 	
 	@FXML private void initialize() {
-		final CummulativeFile finalRootFile;
+		Platform.runLater(this::createTree);
+		System.out.println("Thread started, exiting...");
+	}
+
+	private void createTree() {
 		Thread th=new Thread(new ResponsiveTask<Void>(){
 
 			@Override
 			protected Void call() throws Exception {
+				CummulativeFile rootFile=createDir("../..", fsTreeView);
+				TreeItem<CummulativeFile> rootItem = rootFile.getTreeItem();
+//				rootFile.addEventHandler(rootItem); // add event handler only to root since all events bubble back to root
+				DiskSpaceController.this.setRootFile(rootFile);
 				Platform.runLater(() -> {
-					CummulativeFile rootFile=createDir("../..");
-					TreeItem<CummulativeFile> rootItem = rootFile.getTreeItem();
-//					fsTreeView.setCellFactory(tv -> {return null;});
-					rootFile.addEventHandler(rootItem); // add event handler only to root since all events bubble back to root
 					fsTreeView.setRoot(rootItem);
-					DiskSpaceController.this.setRootFile(rootFile);
 				});
 				return null;
 			}}.bindScene(fsTreeView.sceneProperty()));
