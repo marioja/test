@@ -3,12 +3,13 @@ package net.mfjassociates.diskspace;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
-import javafx.event.EventHandler;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeItem.TreeModificationEvent;
 
@@ -19,6 +20,7 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	private LongProperty length = new SimpleLongProperty(0l);
 	private List<CummulativeFile> files = new ArrayList<CummulativeFile>();
 	private TreeItem<CummulativeFile> treeItem;
+	private Comparator<TreeItem<CummulativeFile>> lengthComparator = Comparator.comparing(t->t.getValue().getLength());
 
 	public CummulativeFile(Path aPath) {
 		this(aPath.toFile());
@@ -140,6 +142,11 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 
 	public synchronized void addLength(long bytes) {
 		length.set(length.get() + bytes);
+		if (this.treeItem!=null) {
+			if (treeItem.getChildren().size()>1) {
+				Platform.runLater(()->this.treeItem.getChildren().sort(lengthComparator.reversed()));
+			}
+		}
 		if (this.parent != null && this.parent != this)
 			this.parent.addLength(bytes);
 	}

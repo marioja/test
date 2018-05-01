@@ -63,9 +63,9 @@
       </VBox>
    </bottom>
    <center>
-      <VBox fx:id="treeViewVbox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="treeViewVbox" BorderPane.alignment="CENTER">
          <children>
-            <TreeView fx:id="fsTreeView" prefHeight="200.0" prefWidth="200.0" />
+            <TreeView fx:id="fsTreeView" VBox.vgrow="ALWAYS" />
          </children></VBox>
    </center>
 </BorderPane>
