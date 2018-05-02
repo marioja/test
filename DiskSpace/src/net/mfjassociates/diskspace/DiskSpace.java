@@ -1,5 +1,8 @@
 package net.mfjassociates.diskspace;
 	
+import java.nio.file.Paths;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,6 +18,10 @@ public class DiskSpace extends Application {
 	private Object createControllerForType(Class<?> type) {
 		if (diskSpaceController==null) {
 			diskSpaceController = new DiskSpaceController();
+			List<String> args = getParameters().getRaw();
+			if (args!= null && !args.isEmpty()) {
+				diskSpaceController.setRootPath(Paths.get(args.get(0)));
+			}
 		}
 		return diskSpaceController;
 	}

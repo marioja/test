@@ -2,6 +2,7 @@ package net.mfjassociates.diskspace;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javafx.scene.control.TreeView;
@@ -29,6 +30,9 @@ public class FileSystemHandler {
 			System.out.println(",l:"+aFile.getLength());
 			aFile.getFiles().stream().forEach(FileSystemHandler::displayMyFile);
 		} else System.out.println();
+	}
+	public static CummulativeFile createDir(Path path, TreeView<CummulativeFile> fsTreeView) {
+		return createDir(path.toString(), fsTreeView);
 	}
 	public static CummulativeFile createDir(String path, TreeView<CummulativeFile> fsTreeView) {
 		CummulativeFile myDir = new CummulativeFile(null, Paths.get(path));

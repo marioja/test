@@ -1,9 +1,14 @@
 package net.mfjassociates.diskspace;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.RoundingMode;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -63,6 +68,18 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		DecimalFormat df=new DecimalFormat(",###");
 		System.out.println(df.format(30l));
 		System.out.println(df.format(4888555666l));
+		NumberFormat nf = NumberFormat.getNumberInstance();
+		for (Path root : FileSystems.getDefault().getRootDirectories()) {
+
+		    System.out.print(root + ": ");
+		    try {
+		        FileStore store = Files.getFileStore(root);
+		        System.out.println("available=" + nf.format(store.getUsableSpace())
+		                            + ", total=" + nf.format(store.getTotalSpace()));
+		    } catch (IOException e) {
+		        System.out.println("error querying space: " + e.toString());
+		    }
+		}
 	}
 
 	/**
@@ -111,7 +128,7 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		length.set(aLength);
 	}
 
-	public LongProperty getLengthProperty() {
+	public LongProperty lengthProperty() {
 		return length;
 	}
 
@@ -155,7 +172,8 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	}
 
 	public synchronized void addLength(long bytes) {
-		length.set(length.get() + bytes);
+		Platform.runLater(() -> length.set(length.get() + bytes));
+		;
 		if (this.treeItem!=null) {
 			if (treeItem.getChildren().size()>1) {
 				Platform.runLater(()->this.treeItem.getChildren().sort(lengthComparator.reversed()));
