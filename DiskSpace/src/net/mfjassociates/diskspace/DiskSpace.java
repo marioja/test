@@ -35,7 +35,7 @@ public class DiskSpace extends Application {
 			Scene scene = new Scene(root,400,400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Java Advanced Imaging Utility");
+			primaryStage.setTitle("Disk Space Utility");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

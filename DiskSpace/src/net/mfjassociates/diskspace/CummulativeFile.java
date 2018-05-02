@@ -1,7 +1,9 @@
 package net.mfjassociates.diskspace;
 
 import java.io.File;
+import java.math.RoundingMode;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +23,13 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	private List<CummulativeFile> files = new ArrayList<CummulativeFile>();
 	private TreeItem<CummulativeFile> treeItem;
 	private Comparator<TreeItem<CummulativeFile>> lengthComparator = Comparator.comparing(t->t.getValue().getLength());
+	private static final DecimalFormat fsize=new DecimalFormat("0.0");
+	private static final DecimalFormat bsize=new DecimalFormat(",###");
+	
+	static {
+		fsize.setRoundingMode(RoundingMode.FLOOR);
+	}
+
 
 	public CummulativeFile(Path aPath) {
 		this(aPath.toFile());
@@ -51,7 +60,9 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		}
 	}
 	public static void main(String[] args) {
-		System.out.println(Math.pow(2,20));
+		DecimalFormat df=new DecimalFormat(",###");
+		System.out.println(df.format(30l));
+		System.out.println(df.format(4888555666l));
 	}
 
 	/**
@@ -120,14 +131,17 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		if (l<twoExp(10)) { // bytes
 			return l+" bytes";
 		} else if (l<twoExp(20)) { // kilobytes
-			return (long)(((double)l)/twoExp(10))+" Kb";
+			return fsize.format(((double)l)/twoExp(10))+" Kb";
 		} else if (l<twoExp(30)) { // megabytes
-			return (long)(((double)l)/twoExp(20))+" Mb";			
+			return fsize.format(((double)l)/twoExp(20))+" Mb";			
 		} else if (l<twoExp(40)) { // gigabytes
-			return (long)(((double)l)/twoExp(30))+" Gb";			
+			return fsize.format(((double)l)/twoExp(30))+" Gb";			
 		} else  { // terabytes
-			return (long)(((double)l)/twoExp(40))+" Tb";			
+			return fsize.format(((double)l)/twoExp(40))+" Tb";			
 		}
+	}
+	public String getBytesLength() {
+		return bsize.format(getLength());
 	}
 	private long twoExp(int e) {
 		return (long) Math.pow(2, e);
