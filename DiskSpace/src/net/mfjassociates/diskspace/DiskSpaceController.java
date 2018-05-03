@@ -83,7 +83,7 @@ public class DiskSpaceController {
 		rootFile=createDir(rootPath, fsTreeView);
 		fsTreeView.setCellFactory(this::createCell);
 		TreeItem<CummulativeFile> rootItem = rootFile.getTreeItem();
-//		rootFile.addEventHandler(rootItem); // add event handler only to root since all events bubble back to root
+		rootFile.addEventHandler(rootItem); // add event handler only to root since all events bubble back to root
 		DiskSpaceController.this.setRootFile(rootFile);
 		Platform.runLater(() -> {
 			progressBar.managedProperty().bind(progressBar.visibleProperty());

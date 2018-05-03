@@ -89,7 +89,7 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	 */
 	public void addEventHandler(TreeItem<CummulativeFile> treeItem) {
 
-		treeItem.addEventHandler(TreeItem.<CummulativeFile>childrenModificationEvent(), new EventHandler<TreeItem.TreeModificationEvent<CummulativeFile>>() {
+		/*treeItem.addEventHandler(TreeItem.<CummulativeFile>childrenModificationEvent(), new EventHandler<TreeItem.TreeModificationEvent<CummulativeFile>>() {
 			@Override
 			public void handle(TreeModificationEvent<CummulativeFile> event) {
 				if (event.wasAdded())
@@ -109,7 +109,18 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 				}
 
 			}
-		});
+		});*/
+		treeItem.addEventHandler(TreeItem.<CummulativeFile>branchExpandedEvent(), new EventHandler<TreeItem.TreeModificationEvent<CummulativeFile>>() {
+			@Override
+			public void handle(TreeModificationEvent<CummulativeFile> event) {
+				if (event.wasExpanded()) {
+					final TreeItem<CummulativeFile> item = event.getTreeItem();
+					Platform.runLater(()->item.getChildren().sort(lengthComparator.reversed()));
+				}
+				
+			}}
+
+		);
 	}
 	
 	public TreeItem<CummulativeFile> getTreeItem() {
@@ -172,15 +183,13 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	}
 
 	public synchronized void addLength(long bytes) {
-		Platform.runLater(() -> length.set(length.get() + bytes));
-		;
+		length.set(length.get() + bytes);
 		if (this.treeItem!=null) {
-			if (treeItem.getChildren().size()>1) {
+			if (treeItem.getChildren().size()>1 && treeItem.expandedProperty().get()) {
 				Platform.runLater(()->this.treeItem.getChildren().sort(lengthComparator.reversed()));
 			}
 		}
-		if (this.parent != null && this.parent != this)
-			this.parent.addLength(bytes);
+		if (this.parent != null) this.parent.addLength(bytes);
 	}
 //	@Override
 //	public void onChanged(Change<? extends TreeItem<CummulativeFile>> c) {
