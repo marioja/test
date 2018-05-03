@@ -35,7 +35,7 @@ public class DiskSpaceController {
 	private Path rootPath=Paths.get("c:/");
 	private LongProperty usableSpace=new SimpleLongProperty(0l);
 	private LongProperty totalSpace=new SimpleLongProperty(0l);
-	private DoubleProperty usedSpace=new SimpleDoubleProperty(0l);
+	private LongProperty usedSpace=new SimpleLongProperty(0l);
 	
 	public long getUsableSpace() {
 		return usableSpace.get();
@@ -65,7 +65,7 @@ public class DiskSpaceController {
 		return totalSpace;
 	}
 	
-	public DoubleProperty usedSpaceProperty() {
+	public LongProperty usedSpaceProperty() {
 		return usedSpace;
 	}
 	
@@ -88,9 +88,7 @@ public class DiskSpaceController {
 		Platform.runLater(() -> {
 			progressBar.managedProperty().bind(progressBar.visibleProperty());
 			progressBar.setProgress(0d);
-//			statusMessageLabel.textProperty().bind(Bindings.convert(Bindings.divide(rootFile.lengthProperty(), usedSpaceProperty())));
-			statusMessageLabel.textProperty().bind(Bindings.format("%,d", rootFile.lengthProperty()));
-			progressBar.progressProperty().bind(Bindings.divide(rootFile.lengthProperty(), usedSpaceProperty()));
+			progressBar.progressProperty().bind(rootFile.lengthProperty().divide(usedSpace.add(0d)));
 			progressBar.setVisible(true);
 			fsTreeView.setRoot(rootItem);
 		});
