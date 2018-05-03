@@ -23,6 +23,7 @@ import javafx.scene.control.TreeItem.TreeModificationEvent;
 public class CummulativeFile /*implements ListChangeListener<TreeItem<CummulativeFile>>*/ {
 
 	private File theUnderlyingFile;
+	private String filePathString;
 	private CummulativeFile parent;
 	private LongProperty length = new SimpleLongProperty(0l);
 	private List<CummulativeFile> files = new ArrayList<CummulativeFile>();
@@ -50,6 +51,7 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 
 	public CummulativeFile(CummulativeFile aParent, File aFile) {
 		this.theUnderlyingFile = aFile;
+		this.filePathString = aFile.toPath().toString();
 		this.parent = aParent;
 		this.treeItem=new TreeItem<CummulativeFile>(this);
 		if (this.parent != null) {
@@ -152,8 +154,12 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 	}
 
 	public String toString() {
-		return this.theUnderlyingFile.toPath().toString()+"("+getHumanLength()+")";
+		return this.filePathString+"("+getHumanLength()+")";
 	}
+	/**
+	 * Print the size of the file/folder using units easy for human to understand 
+	 * @return the length using the correct scaling followed by the units
+	 */
 	public String getHumanLength() {
 		long l=length.get();
 		if (l<twoExp(10)) { // bytes

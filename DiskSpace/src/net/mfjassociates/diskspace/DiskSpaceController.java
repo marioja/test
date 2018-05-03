@@ -10,11 +10,10 @@ import java.nio.file.Paths;
 import java.text.NumberFormat;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -36,6 +35,7 @@ public class DiskSpaceController {
 	private LongProperty usableSpace=new SimpleLongProperty(0l);
 	private LongProperty totalSpace=new SimpleLongProperty(0l);
 	private LongProperty usedSpace=new SimpleLongProperty(0l);
+	private ObjectProperty<ProgressBar> progressBarProperty=new SimpleObjectProperty<ProgressBar>(progressBar);
 	
 	public long getUsableSpace() {
 		return usableSpace.get();
@@ -80,7 +80,7 @@ public class DiskSpaceController {
 		totalSpace.set(store.getTotalSpace());
 		usedSpace.set(totalSpace.get()-usableSpace.get());
 		System.out.println("Used space="+nf.format(usedSpace.get()));
-		rootFile=createDir(rootPath, fsTreeView);
+		rootFile=createDir(rootPath, fsTreeView.sceneProperty(), progressBarProperty);
 		fsTreeView.setCellFactory(this::createCell);
 		TreeItem<CummulativeFile> rootItem = rootFile.getTreeItem();
 		rootFile.addEventHandler(rootItem); // add event handler only to root since all events bubble back to root

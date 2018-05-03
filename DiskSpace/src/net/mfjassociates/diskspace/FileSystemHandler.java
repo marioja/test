@@ -5,7 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javafx.scene.control.TreeView;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import net.mfjassociates.diskspace.util.FXHelper.ResponsiveTask;
 
 /**
@@ -16,8 +19,7 @@ import net.mfjassociates.diskspace.util.FXHelper.ResponsiveTask;
  */
 public class FileSystemHandler {
 	public static void main(String[] args) throws IOException {
-		TreeView<CummulativeFile> fsTreeView=new TreeView<CummulativeFile>();
-		CummulativeFile a=createDir(args[0], fsTreeView);
+		CummulativeFile a=createDir(args[0], null, null);
 		displayMyFile(a);
 	}
 	/**
@@ -31,18 +33,19 @@ public class FileSystemHandler {
 			aFile.getFiles().stream().forEach(FileSystemHandler::displayMyFile);
 		} else System.out.println();
 	}
-	public static CummulativeFile createDir(Path path, TreeView<CummulativeFile> fsTreeView) {
-		return createDir(path.toString(), fsTreeView);
+	public static CummulativeFile createDir(Path path, ReadOnlyObjectProperty<Scene> aSceneProperty, ObjectProperty<ProgressBar> aProgressBarProperty) {
+		return createDir(path.toString(), aSceneProperty, aProgressBarProperty);
 	}
-	public static CummulativeFile createDir(String path, TreeView<CummulativeFile> fsTreeView) {
+	public static CummulativeFile createDir(String path, ReadOnlyObjectProperty<Scene> aSceneProperty, ObjectProperty<ProgressBar> aProgressBarProperty) {
 		CummulativeFile myDir = new CummulativeFile(null, Paths.get(path));
+		// TODO add scene back
 		Thread th=new Thread(new ResponsiveTask<Void>(){
 
 			@Override
 			protected Void call() throws Exception {
 				handleDir(myDir);
 				return null;
-			}}.bindScene(fsTreeView.sceneProperty()));
+			}}.bindScene(aSceneProperty).bindProgressBar(aProgressBarProperty));
 		th.start();
 		return myDir;
 	}
