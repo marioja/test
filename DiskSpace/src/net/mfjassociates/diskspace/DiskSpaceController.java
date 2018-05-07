@@ -7,8 +7,15 @@ import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 
+import edu.umd.cs.treemap.MapLayout;
+import edu.umd.cs.treemap.MapModel;
+import edu.umd.cs.treemap.Mappable;
+import edu.umd.cs.treemap.Rect;
+import edu.umd.cs.treemap.SquarifiedLayout;
+import edu.umd.cs.treemap.test.MyMap;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
@@ -22,7 +29,15 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class DiskSpaceController {
 	
@@ -30,6 +45,8 @@ public class DiskSpaceController {
 	@FXML private TreeView<CummulativeFile> fsTreeView;
 	@FXML private Label statusMessageLabel;
 	@FXML private ProgressBar progressBar;
+	@FXML private BorderPane mainBorderPane;
+	private Pane mainPane;
 	private CummulativeFile rootFile;
 	private Path rootPath=Paths.get("c:/");
 	private LongProperty usableSpace=new SimpleLongProperty(0l);
@@ -72,8 +89,37 @@ public class DiskSpaceController {
 	public void setRootFile(CummulativeFile aRootFile) {
 		this.rootFile=aRootFile;
 	}
+	private static Border myBorder=new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 	
 	@FXML private void initialize() throws IOException {
+		mainPane=new Pane();
+		mainBorderPane.setCenter(mainPane);
+		MapModel map=new MyMap(new double[]{60, 10, 10, 20});
+		Mappable[] items = map.getItems();
+		MapLayout algorithm = new SquarifiedLayout();
+		System.out.println(MessageFormat.format("mainPane W x H: {0} x {1}", mainPane.getWidth(), mainPane.getHeight()));
+		algorithm.layout(map, new Rect(0, 0, 400, 400));
+//	    rect = items[i].getBounds();
+//	    int a=(int)rect.x;
+//	    int b=(int)rect.y;
+//	    int c=(int)(rect.x+rect.w)-a;
+//	    int d=(int)(rect.y+rect.h)-b;
+//	    if (b==0) b=0;
+//	    g.drawRect(a,b,c,d); //x, y, w, h
+		for (int i=0; i<4;i++) {
+			Pane panen=new Pane();
+			Rect rect = items[i].getBounds();
+		    double a=rect.x; // x
+		    double b=rect.y; // y
+		    int c=(int) ((rect.x+rect.w)-a); // width
+		    int d=(int) ((rect.y+rect.h)-b); // height
+			panen.setPrefWidth(c);
+			panen.setPrefHeight(c);
+			panen.setLayoutX(a);
+			panen.setLayoutY(b);
+			panen.setBorder(myBorder);
+		}
+		if (1==1) return;
 		NumberFormat nf = NumberFormat.getNumberInstance();
 		FileStore store = Files.getFileStore(rootPath);
 		usableSpace.set(store.getUsableSpace());

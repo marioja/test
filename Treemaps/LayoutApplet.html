@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>
+    Dynamic Treemaps
+</title>
+</head>
+
+<body bgcolor="#ffffff">
+
+<font face="Arial, Helvetica">
+<h2>Dynamic treemap layout comparison</h2>
+<p>
+<ul>
+  <li>Martin Wattenberg, 
+    <a href="mailto:w@bewitched.com">w@bewitched.com</a><br>
+  <li><a href="http://www.cs.umd.edu/~bederson">Ben Bederson</a>, (University of Maryland, <a href="http://www.cs.umd.edu/hcil">Human-Computer Interaction Lab</a>)
+</ul>
+
+
+<!-- If you change the number of layouts you compare, -->
+<!-- you may need to change the width of the applet.  -->
+<applet code="edu.umd.cs.treemap.demo.LayoutApplet.class" height=730 width=580>
+
+    <!-- The "layouts" param takes a comma-separated list of the full java      -->
+    <!-- class names of the various MapLayout implementations you wish to test. -->
+    <!-- Whitespace in the list is ignored. -->
+    
+    <param name="layouts"
+        value= "edu.umd.cs.treemap.SliceLayout, 
+                edu.umd.cs.treemap.SquarifiedLayout, 
+                edu.umd.cs.treemap.StripTreemap, 
+                edu.umd.cs.treemap.PivotBySplitSize">
+</applet>
+
+</body>
+</html>
