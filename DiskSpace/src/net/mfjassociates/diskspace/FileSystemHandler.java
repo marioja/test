@@ -30,7 +30,7 @@ public class FileSystemHandler {
 		System.out.print(aFile.getFileType()+aFile.getFile().getPath());
 		if (aFile.getFile().isDirectory()) {
 			System.out.println(",l:"+aFile.getLength());
-			aFile.getFiles().stream().forEach(FileSystemHandler::displayMyFile);
+			aFile.getTreeItem().getChildren().stream().map(c -> c.getValue()).forEach(FileSystemHandler::displayMyFile);
 		} else System.out.println();
 	}
 	public static CummulativeFile createDir(Path path, ReadOnlyObjectProperty<Scene> aSceneProperty, ObjectProperty<ProgressBar> aProgressBarProperty) {

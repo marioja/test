@@ -13,20 +13,27 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.umd.cs.treemap.MapItem;
+import edu.umd.cs.treemap.MapModel;
+import edu.umd.cs.treemap.Mappable;
 import javafx.application.Platform;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeItem.TreeModificationEvent;
 
-public class CummulativeFile /*implements ListChangeListener<TreeItem<CummulativeFile>>*/ {
+public class CummulativeFile  extends MapItem implements ListChangeListener<CummulativeFile>, MapModel {
 
 	private File theUnderlyingFile;
 	private String filePathString;
 	private CummulativeFile parent;
 	private LongProperty length = new SimpleLongProperty(0l);
-	private List<CummulativeFile> files = new ArrayList<CummulativeFile>();
+	private List<CummulativeFile> fileso = new ArrayList<CummulativeFile>();
+	private ObservableList<CummulativeFile> files;
 	private TreeItem<CummulativeFile> treeItem;
 	private Comparator<TreeItem<CummulativeFile>> lengthComparator = Comparator.comparing(t->t.getValue().getLength());
 	private static final DecimalFormat fsize=new DecimalFormat("0.0");
@@ -63,7 +70,7 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 			Platform.runLater(() -> {
 				this.parent.getTreeItem().getChildren().add(this.treeItem); // add this treeItem to parent treeItem children
 			});
-			this.parent.files.add(this);
+			this.parent.getFiles().add(this);
 		}
 	}
 	public static void main(String[] args) {
@@ -82,6 +89,14 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		        System.out.println("error querying space: " + e.toString());
 		    }
 		}
+	}
+	
+	private ObservableList<CummulativeFile> getFiles() {
+		if (files==null) {
+			files=FXCollections.observableArrayList();
+			files.addListener(this);
+		}
+		return files;
 	}
 
 	/**
@@ -133,6 +148,10 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		return this.theUnderlyingFile;
 	}
 
+	@Override
+	public double getSize() {
+		return (double) length.get();
+	}
 	public long getLength() {
 		return length.get();
 	}
@@ -147,10 +166,6 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 
 	public CummulativeFile getParent() {
 		return this.parent;
-	}
-
-	public List<CummulativeFile> getFiles() {
-		return files;
 	}
 
 	public String toString() {
@@ -197,23 +212,32 @@ public class CummulativeFile /*implements ListChangeListener<TreeItem<Cummulativ
 		}
 		if (this.parent != null) this.parent.addLength(bytes);
 	}
-//	@Override
-//	public void onChanged(Change<? extends TreeItem<CummulativeFile>> c) {
-//		while (c.next()) {
-//			if (c.wasPermutated()) {
-//				for (int i = c.getFrom(); i < c.getTo(); ++i) {
-//					// permutate
-//				}
-//			} else if (c.wasUpdated()) {
-//				// update item
-//			} else {
-//				for (TreeItem<CummulativeFile> remitem : c.getRemoved()) {
-//					// remitem.remove(TreeItem.this);
-//				}
-//				for (TreeItem<CummulativeFile> additem : c.getAddedSubList()) {
-//					// additem.add(Outer.this);
-//				}
-//			}
-//		}
-//	}
+	@Override
+	public void onChanged(Change<? extends CummulativeFile> c) {
+		while (c.next()) {
+			if (c.wasPermutated()) {
+				for (int i = c.getFrom(); i < c.getTo(); ++i) {
+					// permutate
+				}
+			} else if (c.wasUpdated()) {
+				// update item
+			} else {
+				for (CummulativeFile remitem : c.getRemoved()) {
+					// remitem.remove(TreeItem.this);
+				}
+				int from=c.getFrom();
+				for (CummulativeFile additem : c.getAddedSubList()) {
+					 // additem.add(CummulativeFile.this);
+					additem.setOrder(from++);
+				}
+			}
+		}
+	}
+
+	@Override
+	public Mappable[] getItems() {
+		// TODO Auto-generated method stub
+		return getFiles().toArray(new CummulativeFile[] {});
+	}
+
 }
