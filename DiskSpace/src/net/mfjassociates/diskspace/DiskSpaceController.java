@@ -99,6 +99,12 @@ public class DiskSpaceController {
 		usedSpace.set(totalSpace.get()-usableSpace.get());
 		System.out.println("Used space="+nf.format(usedSpace.get()));
 		rootFile=createDir(rootPath, fsTreeView.sceneProperty(), progressBarProperty);
+		rootFile.wProperty().bind(mainBorderPane.widthProperty());
+		rootFile.hProperty().bind(mainBorderPane.heightProperty());
+		rootFile.getPane().layoutXProperty().unbind();
+		rootFile.getPane().layoutYProperty().unbind();
+		mainBorderPane.setCenter(rootFile.getPane());
+		if (1==1) return;
 		fsTreeView.setCellFactory(this::createCell);
 		TreeItem<CummulativeFile> rootItem = rootFile.getTreeItem();
 		rootFile.addEventHandler(rootItem); // add event handler only to root since all events bubble back to root

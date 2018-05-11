@@ -14,22 +14,38 @@ import java.util.Comparator;
 import java.util.List;
 
 import edu.umd.cs.treemap.MapItem;
+import edu.umd.cs.treemap.MapLayout;
 import edu.umd.cs.treemap.MapModel;
 import edu.umd.cs.treemap.Mappable;
+import edu.umd.cs.treemap.Rect;
+import edu.umd.cs.treemap.SquarifiedLayout;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeItem.TreeModificationEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class CummulativeFile  extends MapItem implements ListChangeListener<CummulativeFile>, MapModel {
 
 	private File theUnderlyingFile;
 	private String filePathString;
+	private Pane thePane;
 	private CummulativeFile parent;
 	private LongProperty length = new SimpleLongProperty(0l);
 	private List<CummulativeFile> fileso = new ArrayList<CummulativeFile>();
@@ -60,6 +76,8 @@ public class CummulativeFile  extends MapItem implements ListChangeListener<Cumm
 		this.theUnderlyingFile = aFile;
 		this.filePathString = aFile.toPath().toString();
 		this.parent = aParent;
+		this.thePane=new Pane();
+		setupPane();
 		this.treeItem=new TreeItem<CummulativeFile>(this);
 		if (this.parent != null) {
 			if (this.theUnderlyingFile.isFile()) {
@@ -144,6 +162,9 @@ public class CummulativeFile  extends MapItem implements ListChangeListener<Cumm
 		return treeItem;
 	}
 
+	public Pane getPane() {
+		return this.thePane;
+	}
 	public File getFile() {
 		return this.theUnderlyingFile;
 	}
@@ -207,11 +228,98 @@ public class CummulativeFile  extends MapItem implements ListChangeListener<Cumm
 		length.set(length.get() + bytes);
 		if (this.treeItem!=null) {
 			if (treeItem.getChildren().size()>1 && treeItem.expandedProperty().get()) {
-				Platform.runLater(()->this.treeItem.getChildren().sort(lengthComparator.reversed()));
+				Platform.runLater(()->{					
+					this.treeItem.getChildren().sort(lengthComparator.reversed());
+				});
 			}
 		}
+		Platform.runLater(()->
+			algorithm.layout(this, this.getBounds())
+		);
 		if (this.parent != null) this.parent.addLength(bytes);
 	}
+	private static Border myBorder=new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+
+	/**
+	 * Setup the pane to update from its rectangle object (bounds)
+	 */
+	public void setupPane() {
+//		Rect rect = getBounds();
+//	    double x=rect.x; // x
+//	    double y=rect.y; // y
+//	    int w=(int) ((rect.x+rect.w)-x); // width
+//	    int h=(int) ((rect.y+rect.h)-y); // height
+//		thePane.setPrefWidth(w);
+//		thePane.setPrefHeight(h);
+//		thePane.setLayoutX(x);
+//		thePane.setLayoutY(y);
+		thePane.setBorder(myBorder);
+		thePane.prefWidthProperty().bind(Bindings.add(xProperty(), wProperty()));
+		thePane.prefHeightProperty().bind(Bindings.add(yProperty(), hProperty()));
+		thePane.layoutXProperty().bind(xProperty());
+		thePane.layoutYProperty().bind(yProperty());
+	}
+	private ObjectProperty<Rect> bounds=new SimpleObjectProperty<Rect>(new Rect());
+	private DoubleProperty x=new SimpleDoubleProperty(0d);
+	private DoubleProperty y=new SimpleDoubleProperty(0d);
+	private DoubleProperty w=new SimpleDoubleProperty(0d);
+	private DoubleProperty h=new SimpleDoubleProperty(0d);
+	
+	public DoubleProperty xProperty() {
+		return x;
+	}
+	public double getX() {
+		return x.get();
+	}
+	public void setX(double aX) {
+		x.set(aX);
+	}
+	public DoubleProperty wProperty() {
+		return w;
+	}
+	public double getW() {
+		return w.get();
+	}
+	public void setW(double aW) {
+		w.set(aW);
+	}
+
+	public DoubleProperty yProperty() {
+		return y;
+	}
+	public double gety() {
+		return y.get();
+	}
+	public void setY(double aY) {
+		y.set(aY);
+	}
+	public DoubleProperty hProperty() {
+		return h;
+	}
+	public double getH() {
+		return h.get();
+	}
+	public void setH(double aH) {
+		h.set(aH);
+	}
+	
+	
+	public ObjectProperty<Rect> boundsProperty() {
+		return bounds;
+	}
+	@Override
+	public Rect getBounds() {
+		return bounds.get();
+	}
+	@Override
+	public void setBounds(Rect aBounds) {
+		bounds.set(aBounds);
+		x.set(bounds.get().x);
+		y.set(bounds.get().y);
+		w.set(bounds.get().w);
+		h.set(bounds.get().h);
+	}
+	private static MapLayout algorithm = new SquarifiedLayout();
 	@Override
 	public void onChanged(Change<? extends CummulativeFile> c) {
 		while (c.next()) {
@@ -224,11 +332,14 @@ public class CummulativeFile  extends MapItem implements ListChangeListener<Cumm
 			} else {
 				for (CummulativeFile remitem : c.getRemoved()) {
 					// remitem.remove(TreeItem.this);
+					Platform.runLater(()->this.thePane.getChildren().remove(remitem.thePane));
 				}
 				int from=c.getFrom();
 				for (CummulativeFile additem : c.getAddedSubList()) {
 					 // additem.add(CummulativeFile.this);
 					additem.setOrder(from++);
+					Platform.runLater(()->this.thePane.getChildren().add(additem.thePane));
+					;
 				}
 			}
 		}
